@@ -14,13 +14,23 @@ public class boardMain {
 			String cmd = sc.nextLine();
 
 			cmd = cmd.trim();
-			
+
+			if (cmd.length() == 0) {
+				continue;
+			}
+
 			if (cmd.equals("system exit")) {
 				System.out.println("== 프로그램 종료 ==");
 				break;
+				
+			} else if (cmd.equals("article write")) {
+
+				System.out.println("== 게시글 작성 ==");
+				// 구현중
+			} else {
+				System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 			}
 
-			System.out.println(cmd);
 		}
 
 	}
