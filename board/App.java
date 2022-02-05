@@ -3,11 +3,14 @@ package board;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import board.util.DBUtil;
+import board.util.SecSql;
 
 public class App {
 
@@ -85,64 +88,42 @@ public class App {
 			System.out.print("내용 : ");
 			String body = sc.nextLine();
 
-			// JDBC적용
-			try {
+			// DBUtil 적용
+			SecSql sql = new SecSql();
+			sql.append("INSERT INTO article");
+			sql.append("SET regDate = NOW()");
+			sql.append(", updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", body = ?", body);
 
-				String sql = "INSERT INTO article";
-				sql += " SET regDate = NOW()";
-				sql += ", updateDate = NOW()";
-				sql += ", title = \"" + title + "\"";
-				sql += ", body = \"" + body + "\"";
+			int id = DBUtil.insert(conn, sql);
 
-				pstat = conn.prepareStatement(sql);
-				int affectedRows = pstat.executeUpdate();
-
-				System.out.printf("게시글이 등록되었습니다.\n");
-
-			} catch (Exception e) {
-				System.out.println("작업수행 중 오류발생");
-			}
+			System.out.printf("%d번 게시글이 등록되었습니다.\n", id);
 
 		} else if (cmd.equals("article list")) {
 
 			System.out.println("== 게시글 목록 ==");
 			List<Article> articles = new ArrayList<>();
 
-			// JDBC적용
-			ResultSet rs = null; // Resultset은 executeQuery의 결과값을 저장, next함수를 통해 데이터를 참조
+			// DBUtil 적용
+			SecSql sql = new SecSql();
+			sql.append("SELECT * FROM article");
+			sql.append("ORDER BY id DESC");
 
-			try {
-				String sql = "SELECT * FROM article";
-				sql += " ORDER BY id DESC";
+			List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
 
-				pstat = conn.prepareStatement(sql);
-				rs = pstat.executeQuery(sql);
+			for (Map<String, Object> articleMap : articleListMap) {
+				articles.add(new Article(articleMap));
+			}
 
-				while (rs.next()) {
+			if (articles.size() == 0) {
+				System.out.println("게시글이 존재하지 않습니다.");
+				return 0;
+			}
 
-					int id = rs.getInt("id");
-					String regDate = rs.getString("regDate");
-					String updateDate = rs.getString("updateDate");
-					String title = rs.getString("title");
-					String body = rs.getString("body");
-
-					Article article = new Article(id, regDate, updateDate, title, body);
-					articles.add(article);
-
-				}
-
-				if (articles.size() == 0) {
-					System.out.println("게시글이 존재하지 않습니다.");
-					return 0;
-				}
-
-				System.out.println("번호 / 제목 ");
-				for (Article article : articles) {
-					System.out.printf(" %d / %s \n", article.id, article.title);
-				}
-
-			} catch (Exception e) {
-				System.out.println("작업수행 중 오류발생");
+			System.out.println("번호 / 제목 ");
+			for (Article article : articles) {
+				System.out.printf(" %d / %s \n", article.id, article.title);
 			}
 
 		} else if (cmd.startsWith("article modify")) {
@@ -155,21 +136,17 @@ public class App {
 			System.out.print("새 내용 : ");
 			String body = sc.nextLine();
 
-			// JDBC적용
-			try {
-				String sql = "UPDATE article";
-				sql += " SET updateDate = NOW()";
-				sql += ", title = \"" + title + "\"";
-				sql += ", body = \"" + body + "\"";
-				sql += "WHERE id =" + id;
+			// DBUtil 적용
+			SecSql sql = new SecSql();
+			sql.append("UPDATE article");
+			sql.append("SET updateDate = NOW()");
+			sql.append(", title = ?", title);
+			sql.append(", body = ?", body);
+			sql.append("WHERE id = ?", id);
 
-				pstat = conn.prepareStatement(sql);
-				pstat.executeUpdate();
+			DBUtil.update(conn, sql);
 
-				System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
-			} catch (Exception e) {
-				System.out.println("작업수행 중 오류발생");
-			}
+			System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
 
 		} else {
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
