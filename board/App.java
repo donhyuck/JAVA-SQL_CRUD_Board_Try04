@@ -2,7 +2,6 @@ package board;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ public class App {
 
 		// JDBC적용
 		Connection conn = null; // DB 접속 객체
-		PreparedStatement pstat = null; // SQL 구문을 실행하는 역할
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver"); // Mysql JDBC 드라이버 로딩
@@ -41,7 +39,7 @@ public class App {
 					continue;
 				}
 
-				int actionResult = doAction(conn, sc, cmd, pstat);
+				int actionResult = doAction(conn, sc, cmd);
 
 				// 프로그램 종료
 				if (actionResult == -1) {
@@ -61,19 +59,11 @@ public class App {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-
-			try {
-				if (pstat != null && !pstat.isClosed()) {
-					pstat.close(); // 연결 종료
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 
 	}
 
-	private int doAction(Connection conn, Scanner sc, String cmd, PreparedStatement pstat) {
+	private int doAction(Connection conn, Scanner sc, String cmd) {
 
 		if (cmd.equals("system exit")) {
 			System.out.println("== 프로그램 종료 ==");
