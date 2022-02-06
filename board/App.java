@@ -113,21 +113,34 @@ public class App {
 
 			System.out.println("번호 / 제목 ");
 			for (Article article : articles) {
-				System.out.printf(" %d / %s \n", article.id, article.title);
+				System.out.printf(" %2d / %s \n", article.id, article.title);
 			}
 
 		} else if (cmd.startsWith("article modify")) {
 
-			System.out.println("== 게시글 수정 ==");
-
 			int id = Integer.parseInt(cmd.split(" ")[2].trim());
+
+			// 해당 게시글이 있는지 확인
+			SecSql sql = new SecSql();
+			sql.append("SELECT COUNT(*)");
+			sql.append("FROM article");
+			sql.append("WHERE id = ?", id);
+
+			int foundArticleId = DBUtil.selectRowIntValue(conn, sql);
+
+			if (foundArticleId == 0) {
+				System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+				return 0;
+			}
+
+			System.out.println("== 게시글 수정 ==");
 			System.out.print("새 제목 : ");
 			String title = sc.nextLine();
 			System.out.print("새 내용 : ");
 			String body = sc.nextLine();
 
 			// DBUtil 적용
-			SecSql sql = new SecSql();
+			sql = new SecSql();
 			sql.append("UPDATE article");
 			sql.append("SET updateDate = NOW()");
 			sql.append(", title = ?", title);
