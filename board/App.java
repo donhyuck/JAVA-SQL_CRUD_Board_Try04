@@ -118,6 +118,18 @@ public class App {
 
 		} else if (cmd.startsWith("article modify")) {
 
+			// 수정, 삭제, 상세보기의 경우 두번째 index자리에 들어오는 숫자로 명령을 수행할 게시글을 골라낸다.
+			// 이때, 그 자리에 문자가 입력될 경우 에러가 발생한다.
+			// 해당 문제를 해결하는 정규표현식이있다.
+
+			// 정수이외는 예외처리(정규표현식)
+			boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+
+			if (!isInt) {
+				System.out.println("게시글 번호를 숫자로 입력해주세요");
+				return 0;
+			}
+
 			int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
 			// 해당 게시글이 있는지 확인
@@ -153,6 +165,14 @@ public class App {
 
 		} else if (cmd.startsWith("article delete")) {
 
+			// 정수이외는 예외처리(정규표현식)
+			boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+
+			if (!isInt) {
+				System.out.println("게시글 번호를 숫자로 입력해주세요");
+				return 0;
+			}
+
 			int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
 			// 해당 게시글이 있는지 확인
@@ -180,6 +200,14 @@ public class App {
 			System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
 
 		} else if (cmd.startsWith("article detail")) {
+
+			// 정수이외는 예외처리(정규표현식)
+			boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+
+			if (!isInt) {
+				System.out.println("게시글 번호를 숫자로 입력해주세요");
+				return 0;
+			}
 
 			int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
