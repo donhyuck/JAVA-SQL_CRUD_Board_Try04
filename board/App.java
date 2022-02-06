@@ -92,7 +92,6 @@ public class App {
 
 		} else if (cmd.equals("article list")) {
 
-			System.out.println("== 게시글 목록 ==");
 			List<Article> articles = new ArrayList<>();
 
 			// DBUtil 적용
@@ -111,6 +110,7 @@ public class App {
 				return 0;
 			}
 
+			System.out.println("== 게시글 목록 ==");
 			System.out.println("번호 / 제목 ");
 			for (Article article : articles) {
 				System.out.printf(" %2d / %s \n", article.id, article.title);
@@ -178,6 +178,38 @@ public class App {
 			DBUtil.delete(conn, sql);
 
 			System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
+
+		} else if (cmd.startsWith("article detail")) {
+
+			int id = Integer.parseInt(cmd.split(" ")[2].trim());
+
+			// 해당 게시글이 있는지 확인
+			SecSql sql = new SecSql();
+			sql.append("SELECT COUNT(*)");
+			sql.append("FROM article");
+			sql.append("WHERE id = ?", id);
+
+			int foundArticleId = DBUtil.selectRowIntValue(conn, sql);
+
+			if (foundArticleId == 0) {
+				System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+				return 0;
+			}
+
+			// DBUtil 적용
+			sql = new SecSql();
+			sql.append("SELECT * FROM article");
+			sql.append("WHERE id = ?", id);
+
+			Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+			Article article = new Article(articleMap);
+
+			System.out.printf("== %d번 게시글 상세보기 ==\n", id);
+			System.out.printf("번 호 : %d\n", article.id);
+			System.out.printf("등록일 : %s\n", article.regDate);
+			System.out.printf("수정일 : %s\n", article.updateDate);
+			System.out.printf("제 목 : %s\n", article.title);
+			System.out.printf("내 용 : %s\n", article.body);
 
 		} else {
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
