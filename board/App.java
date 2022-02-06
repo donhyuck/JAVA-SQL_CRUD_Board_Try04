@@ -151,6 +151,34 @@ public class App {
 
 			System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
 
+		} else if (cmd.startsWith("article delete")) {
+
+			int id = Integer.parseInt(cmd.split(" ")[2].trim());
+
+			// 해당 게시글이 있는지 확인
+			SecSql sql = new SecSql();
+			sql.append("SELECT COUNT(*)");
+			sql.append("FROM article");
+			sql.append("WHERE id = ?", id);
+
+			int foundArticleId = DBUtil.selectRowIntValue(conn, sql);
+
+			if (foundArticleId == 0) {
+				System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+				return 0;
+			}
+
+			System.out.println("== 게시글 삭제 ==");
+
+			// DBUtil 적용
+			sql = new SecSql();
+			sql.append("DELETE FROM article");
+			sql.append("WHERE id = ?", id);
+
+			DBUtil.delete(conn, sql);
+
+			System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
+
 		} else {
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
