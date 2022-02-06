@@ -239,6 +239,85 @@ public class App {
 			System.out.printf("제 목 : %s\n", article.title);
 			System.out.printf("내 용 : %s\n", article.body);
 
+		} else if (cmd.startsWith("member join")) {
+
+			System.out.println("== 회원가입 ==");
+
+			SecSql sql = new SecSql();
+
+			String loginId;
+			String loginPw;
+			String loginPwConfirm;
+			String name;
+
+			// 아이디 입력
+			while (true) {
+
+				System.out.print("아이디 : ");
+				loginId = sc.nextLine();
+
+				if (loginId.length() == 0) {
+					System.out.println("아이디를 입력하세요");
+					continue;
+				}
+
+				sql.append("SELECT COUNT(*)");
+				sql.append("FROM `member`");
+				sql.append("WHERE loginId = ?", loginId);
+
+				int memberCnt = DBUtil.selectRowIntValue(conn, sql);
+
+				if (memberCnt > 0) {
+					System.out.println("이미 존재하는 아이디입니다.");
+					continue;
+				}
+				break;
+			}
+
+			// 비밀번호 입력
+			while (true) {
+
+				System.out.print("비밀번호 : ");
+				loginPw = sc.nextLine();
+
+				if (loginPw.length() == 0) {
+					System.out.println("비밀번호를 입력하세요");
+					continue;
+				}
+
+				while (true) {
+
+					System.out.print("비밀번호 재입력 : ");
+					loginPwConfirm = sc.nextLine();
+
+					if (loginPwConfirm.length() == 0) {
+						System.out.println("비밀번호를 입력하세요");
+						continue;
+					}
+
+					break;
+				}
+
+				if (!loginPw.equals(loginPwConfirm)) {
+					System.out.println("비밀번호가 일치하지 않습니다.");
+					continue;
+				}
+				break;
+			}
+
+			// 닉네임 입력
+			while (true) {
+
+				System.out.print("이름 : ");
+				name = sc.nextLine();
+
+				if (name.length() == 0) {
+					System.out.println("이름를 입력하세요");
+					continue;
+				}
+				break;
+			}
+
 		} else {
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
