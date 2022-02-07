@@ -3,7 +3,7 @@ DROP DATABASE IF EXISTS DB_board;
 CREATE DATABASE DB_board;
 
 USE DB_board;
-
+# DB - 게시글 작성쿼리 try 04
 #게시글 테이블 삭제
 DELETE FROM article;
 DROP TABLE article;
@@ -45,6 +45,9 @@ WHERE id = 10;
 SELECT * FROM article
 WHERE id = 5;
 
+#회원 삭제
+DROP TABLE `member`;
+
 # 회원 테이블 생성
 CREATE TABLE `member` (
 	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -71,3 +74,7 @@ updateDate = NOW(),
 loginId = 'admin',
 loginPw = 'admin',
 `name` = '관리자';
+
+# 로그인
+SELECT * FROM `member`
+WHERE loginId = 'test3';
