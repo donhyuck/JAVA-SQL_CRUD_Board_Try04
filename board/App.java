@@ -360,7 +360,14 @@ public class App {
 			String loginId;
 			String loginPw;
 
+			int blockCnt = 0;
+
 			while (true) {
+
+				if (blockCnt >= 3) {
+					System.out.println("입력횟수 초과! 다시 시도해주세요.");
+					return 0;
+				}
 
 				System.out.print("아이디 : ");
 				loginId = sc.nextLine();
@@ -379,32 +386,47 @@ public class App {
 
 				if (memberCnt == 0) {
 					System.out.println("등록되지 않은 아이디입니다.");
+					blockCnt++;
 					continue;
 				}
 				break;
 			}
+
+			Member member;
+			blockCnt = 0;
 
 			while (true) {
-				System.out.print("비밀번호 : ");
-				loginPw = sc.nextLine();
 
-				if (loginPw.length() == 0) {
-					System.out.println("비밀번호를 입력하세요");
+				if (blockCnt >= 3) {
+					System.out.println("입력횟수 초과! 다시 시도해주세요.");
+					return 0;
+				}
+
+				while (true) {
+
+					System.out.print("비밀번호 : ");
+					loginPw = sc.nextLine();
+
+					if (loginPw.length() == 0) {
+						System.out.println("비밀번호를 입력하세요");
+						continue;
+					}
+					break;
+				}
+
+				sql = new SecSql();
+				sql.append("SELECT * FROM `member`");
+				sql.append("WHERE loginId = ?", loginId);
+
+				Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+				member = new Member(memberMap);
+
+				if (!member.loginPw.equals(loginPw)) {
+					System.out.println("비밀번호가 일치하지 않습니다.");
+					blockCnt++;
 					continue;
 				}
 				break;
-			}
-
-			sql = new SecSql();
-			sql.append("SELECT * FROM `member`");
-			sql.append("WHERE loginId = ?", loginId);
-
-			Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
-			Member member = new Member(memberMap);
-
-			if (!member.loginPw.equals(loginPw)) {
-				System.out.println("비밀번호가 일치하지 않습니다.");
-				return 0;
 			}
 
 			System.out.printf("%s님 로그인되었습니다.\n", member.name);
