@@ -318,6 +318,19 @@ public class App {
 				break;
 			}
 
+			// DBUtil 적용
+			sql = new SecSql();
+			sql.append("INSERT INTO `member`");
+			sql.append("SET regDate = NOW()");
+			sql.append(", updateDate = NOW()");
+			sql.append(", loginId = ?", loginId);
+			sql.append(", loginPw = ?", loginPw);
+			sql.append(", name = ?", name);
+
+			DBUtil.insert(conn, sql);
+
+			System.out.printf("%s님 환영합니다!\n", name);
+
 		} else {
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
