@@ -438,6 +438,28 @@ public class App {
 			session.loginedMember = member;
 			System.out.printf("%s님 로그인되었습니다.\n", member.name);
 
+		} else if (cmd.equals("member logout")) {
+
+			if (session.loginedMember == null) {
+				System.out.println("현재 로그아웃 상태입니다.");
+				return 0;
+			}
+
+			System.out.printf("%s님 로그아웃되었습니다.\n", session.loginedMember.name);
+			session.loginedMember = null;
+			session.loginedMemberId = -1;
+
+		} else if (cmd.equals("member whoami")) {
+
+			if (session.loginedMember == null) {
+				System.out.println("현재 로그아웃 상태입니다.");
+				return 0;
+			}
+
+			System.out.println("== 회원정보 조회 ==");
+			System.out.printf("아이디 : %s\n", session.loginedMember.loginId);
+			System.out.printf("이 름 : %s\n", session.loginedMember.name);
+
 		} else {
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
