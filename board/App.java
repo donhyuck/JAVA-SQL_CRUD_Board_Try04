@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import board.session.Session;
 import board.util.DBUtil;
 import board.util.SecSql;
 
@@ -16,6 +17,9 @@ public class App {
 	public void start() {
 
 		Scanner sc = new Scanner(System.in);
+
+		// 세션 적용
+		Session session = new Session();
 
 		// JDBC적용
 		Connection conn = null; // DB 접속 객체
@@ -39,7 +43,7 @@ public class App {
 					continue;
 				}
 
-				int actionResult = doAction(conn, sc, cmd);
+				int actionResult = doAction(conn, sc, cmd, session);
 
 				// 프로그램 종료
 				if (actionResult == -1) {
@@ -63,7 +67,7 @@ public class App {
 
 	}
 
-	private int doAction(Connection conn, Scanner sc, String cmd) {
+	private int doAction(Connection conn, Scanner sc, String cmd, Session session) {
 
 		if (cmd.equals("system exit")) {
 			System.out.println("== 프로그램 종료 ==");
@@ -429,6 +433,9 @@ public class App {
 				break;
 			}
 
+			// 로그인 처리
+			session.loginedMemberId = member.id;
+			session.loginedMember = member;
 			System.out.printf("%s님 로그인되었습니다.\n", member.name);
 
 		} else {
