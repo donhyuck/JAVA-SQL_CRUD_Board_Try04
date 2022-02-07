@@ -243,24 +243,34 @@ public class App {
 
 			System.out.println("== 회원가입 ==");
 
-			SecSql sql = new SecSql();
+			SecSql sql;
 
 			String loginId;
 			String loginPw;
 			String loginPwConfirm;
 			String name;
 
+			// 입력횟수 제한
+			int blockCnt = 0;
+
 			// 아이디 입력
 			while (true) {
+
+				if (blockCnt >= 3) {
+					System.out.println("입력횟수 초과! 다시 시도해주세요.");
+					return 0;
+				}
 
 				System.out.print("아이디 : ");
 				loginId = sc.nextLine();
 
 				if (loginId.length() == 0) {
 					System.out.println("아이디를 입력하세요");
+					blockCnt++;
 					continue;
 				}
 
+				sql = new SecSql();
 				sql.append("SELECT COUNT(*)");
 				sql.append("FROM `member`");
 				sql.append("WHERE loginId = ?", loginId);
@@ -269,19 +279,28 @@ public class App {
 
 				if (memberCnt > 0) {
 					System.out.println("이미 존재하는 아이디입니다.");
+					blockCnt++;
 					continue;
 				}
 				break;
 			}
 
+			blockCnt = 0;
+
 			// 비밀번호 입력
 			while (true) {
+
+				if (blockCnt >= 3) {
+					System.out.println("입력횟수 초과! 다시 시도해주세요.");
+					return 0;
+				}
 
 				System.out.print("비밀번호 : ");
 				loginPw = sc.nextLine();
 
 				if (loginPw.length() == 0) {
 					System.out.println("비밀번호를 입력하세요");
+					blockCnt++;
 					continue;
 				}
 
@@ -300,6 +319,7 @@ public class App {
 
 				if (!loginPw.equals(loginPwConfirm)) {
 					System.out.println("비밀번호가 일치하지 않습니다.");
+					blockCnt++;
 					continue;
 				}
 				break;
