@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import board.Member;
+import board.service.MemberService;
 import board.session.Session;
 import board.util.DBUtil;
 import board.util.SecSql;
@@ -16,18 +17,20 @@ public class MemberController {
 	String cmd;
 	Session session;
 
+	MemberService memberService;
+
 	public MemberController(Connection conn, Scanner sc, String cmd, Session session) {
 		this.conn = conn;
 		this.sc = sc;
 		this.cmd = cmd;
 		this.session = session;
+
+		memberService = new MemberService(conn);
 	}
 
 	public void doJoin() {
 
 		System.out.println("== 회원가입 ==");
-
-		SecSql sql;
 
 		String loginId;
 		String loginPw;
@@ -54,12 +57,7 @@ public class MemberController {
 				continue;
 			}
 
-			sql = new SecSql();
-			sql.append("SELECT COUNT(*)");
-			sql.append("FROM `member`");
-			sql.append("WHERE loginId = ?", loginId);
-
-			int memberCnt = DBUtil.selectRowIntValue(conn, sql);
+			int memberCnt = memberService.getMemberCntByLoginId(loginId);
 
 			if (memberCnt > 0) {
 				System.out.println("이미 존재하는 아이디입니다.");
@@ -122,16 +120,7 @@ public class MemberController {
 			break;
 		}
 
-		// DBUtil 적용
-		sql = new SecSql();
-		sql.append("INSERT INTO `member`");
-		sql.append("SET regDate = NOW()");
-		sql.append(", updateDate = NOW()");
-		sql.append(", loginId = ?", loginId);
-		sql.append(", loginPw = ?", loginPw);
-		sql.append(", name = ?", name);
-
-		DBUtil.insert(conn, sql);
+		memberService.doJoin(loginId, loginPw, name);
 
 		System.out.printf("%s님 환영합니다!\n", name);
 	}
@@ -162,12 +151,7 @@ public class MemberController {
 				continue;
 			}
 
-			sql = new SecSql();
-			sql.append("SELECT COUNT(*)");
-			sql.append("FROM `member`");
-			sql.append("WHERE loginId = ?", loginId);
-
-			int memberCnt = DBUtil.selectRowIntValue(conn, sql);
+			int memberCnt = memberService.getMemberCntByLoginId(loginId);
 
 			if (memberCnt == 0) {
 				System.out.println("등록되지 않은 아이디입니다.");
@@ -199,12 +183,7 @@ public class MemberController {
 				break;
 			}
 
-			sql = new SecSql();
-			sql.append("SELECT * FROM `member`");
-			sql.append("WHERE loginId = ?", loginId);
-
-			Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
-			member = new Member(memberMap);
+			member = memberService.getMemberByLoginId(loginId);
 
 			if (!member.loginPw.equals(loginPw)) {
 				System.out.println("비밀번호가 일치하지 않습니다.");
