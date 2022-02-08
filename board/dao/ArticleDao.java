@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import board.Article;
+import board.dto.Article;
 import board.util.DBUtil;
 import board.util.SecSql;
 

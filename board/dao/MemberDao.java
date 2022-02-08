@@ -3,7 +3,7 @@ package board.dao;
 import java.sql.Connection;
 import java.util.Map;
 
-import board.Member;
+import board.dto.Member;
 import board.util.DBUtil;
 import board.util.SecSql;
 

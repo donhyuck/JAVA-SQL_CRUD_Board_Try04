@@ -3,7 +3,7 @@ package board.controller;
 import java.sql.Connection;
 import java.util.Scanner;
 
-import board.Member;
+import board.dto.Member;
 import board.service.MemberService;
 import board.session.Session;
 import board.util.SecSql;
@@ -200,7 +200,7 @@ public class MemberController extends Controller {
 
 			member = memberService.getMemberByLoginId(loginId);
 
-			if (!member.loginPw.equals(loginPw)) {
+			if (!member.getLoginPw().equals(loginPw)) {
 				System.out.println("비밀번호가 일치하지 않습니다.");
 				blockCnt++;
 				continue;
@@ -209,9 +209,9 @@ public class MemberController extends Controller {
 		}
 
 		// 로그인 처리
-		session.loginedMemberId = member.id;
+		session.loginedMemberId = member.getId();
 		session.loginedMember = member;
-		System.out.printf("%s님 로그인되었습니다.\n", member.name);
+		System.out.printf("%s님 로그인되었습니다.\n", member.getName());
 	}
 
 	private void dologout() {
@@ -221,7 +221,7 @@ public class MemberController extends Controller {
 			return;
 		}
 
-		System.out.printf("%s님 로그아웃되었습니다.\n", session.loginedMember.name);
+		System.out.printf("%s님 로그아웃되었습니다.\n", session.loginedMember.getName());
 		session.loginedMember = null;
 		session.loginedMemberId = -1;
 	}
@@ -234,8 +234,8 @@ public class MemberController extends Controller {
 		}
 
 		System.out.println("== 회원정보 조회 ==");
-		System.out.printf("아이디 : %s\n", session.loginedMember.loginId);
-		System.out.printf("이 름 : %s\n", session.loginedMember.name);
+		System.out.printf("아이디 : %s\n", session.loginedMember.getLoginId());
+		System.out.printf("이 름 : %s\n", session.loginedMember.getName());
 
 	}
 

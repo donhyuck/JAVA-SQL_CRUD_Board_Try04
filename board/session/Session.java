@@ -1,6 +1,6 @@
 package board.session;
 
-import board.Member;
+import board.dto.Member;
 
 public class Session {
 
@@ -11,4 +11,19 @@ public class Session {
 		loginedMemberId = -1;
 	}
 
+	public Member getLoginedMember() {
+		return loginedMember;
+	}
+
+	public void setLoginedMember(Member loginedMember) {
+		this.loginedMember = loginedMember;
+	}
+
+	public int getLoginedMemberId() {
+		return loginedMemberId;
+	}
+
+	public void setLoginedMemberId(int loginedMemberId) {
+		this.loginedMemberId = loginedMemberId;
+	}
 }

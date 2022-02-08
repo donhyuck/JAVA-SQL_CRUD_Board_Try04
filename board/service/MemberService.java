@@ -2,8 +2,8 @@ package board.service;
 
 import java.sql.Connection;
 
-import board.Member;
 import board.dao.MemberDao;
+import board.dto.Member;
 
 public class MemberService {
 

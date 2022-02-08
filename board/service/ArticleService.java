@@ -3,8 +3,8 @@ package board.service;
 import java.sql.Connection;
 import java.util.List;
 
-import board.Article;
 import board.dao.ArticleDao;
+import board.dto.Article;
 
 public class ArticleService {
 

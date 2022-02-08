@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Scanner;
 
-import board.Article;
+import board.dto.Article;
 import board.service.ArticleService;
 import board.session.Session;
 
@@ -73,7 +73,7 @@ public class ArticleController extends Controller {
 		System.out.println("== 게시글 목록 ==");
 		System.out.println("번호 / 제목 ");
 		for (Article article : articles) {
-			System.out.printf(" %2d / %s \n", article.id, article.title);
+			System.out.printf(" %2d / %s \n", article.getId(), article.getTitle());
 		}
 	}
 
@@ -150,10 +150,10 @@ public class ArticleController extends Controller {
 		Article article = articleService.getArticle(id);
 
 		System.out.printf("== %d번 게시글 상세보기 ==\n", id);
-		System.out.printf("번 호 : %d\n", article.id);
-		System.out.printf("등록일 : %s\n", article.regDate);
-		System.out.printf("수정일 : %s\n", article.updateDate);
-		System.out.printf("제 목 : %s\n", article.title);
-		System.out.printf("내 용 : %s\n", article.body);
+		System.out.printf("번 호 : %d\n", article.getId());
+		System.out.printf("등록일 : %s\n", article.getRegDate());
+		System.out.printf("수정일 : %s\n", article.getUpdateDate());
+		System.out.printf("제 목 : %s\n", article.getTitle());
+		System.out.printf("내 용 : %s\n", article.getBody());
 	}
 }
