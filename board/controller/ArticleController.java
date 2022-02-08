@@ -1,28 +1,22 @@
 package board.controller;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import board.Article;
 import board.service.ArticleService;
 import board.session.Session;
-import board.util.DBUtil;
-import board.util.SecSql;
 
-public class ArticleController {
+public class ArticleController extends Controller {
 
-	Connection conn;
-	Scanner sc;
-	String cmd;
-	Session session;
+	private Scanner sc;
+	private String cmd;
+	private Session session;
 
-	ArticleService articleService;
+	private ArticleService articleService;
 
 	public ArticleController(Connection conn, Scanner sc, String cmd, Session session) {
-		this.conn = conn;
 		this.sc = sc;
 		this.cmd = cmd;
 		this.session = session;
@@ -30,7 +24,30 @@ public class ArticleController {
 		articleService = new ArticleService(conn);
 	}
 
-	public void doWrite() {
+	@Override
+	public void doAction() {
+
+		if (cmd.equals("article write")) {
+			doWrite();
+
+		} else if (cmd.equals("article list")) {
+			showList();
+
+		} else if (cmd.startsWith("article modify")) {
+			doModify();
+
+		} else if (cmd.startsWith("article delete")) {
+			doDelete();
+
+		} else if (cmd.startsWith("article detail")) {
+			showDetail();
+		} else {
+			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
+		}
+
+	}
+
+	private void doWrite() {
 
 		System.out.println("== 게시글 작성 ==");
 
@@ -44,7 +61,7 @@ public class ArticleController {
 		System.out.printf("%d번 게시글이 등록되었습니다.\n", id);
 	}
 
-	public void showList() {
+	private void showList() {
 
 		List<Article> articles = articleService.getArticles();
 
@@ -60,7 +77,7 @@ public class ArticleController {
 		}
 	}
 
-	public void doModify() {
+	private void doModify() {
 
 		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
 
@@ -89,7 +106,7 @@ public class ArticleController {
 		System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
 	}
 
-	public void doDelete() {
+	private void doDelete() {
 
 		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
 
@@ -112,7 +129,7 @@ public class ArticleController {
 		System.out.printf("%d번 게시글이 삭제되었습니다.\n", id);
 	}
 
-	public void showDetail() {
+	private void showDetail() {
 
 		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
 
@@ -139,5 +156,4 @@ public class ArticleController {
 		System.out.printf("제 목 : %s\n", article.title);
 		System.out.printf("내 용 : %s\n", article.body);
 	}
-
 }

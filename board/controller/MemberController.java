@@ -1,26 +1,22 @@
 package board.controller;
 
 import java.sql.Connection;
-import java.util.Map;
 import java.util.Scanner;
 
 import board.Member;
 import board.service.MemberService;
 import board.session.Session;
-import board.util.DBUtil;
 import board.util.SecSql;
 
-public class MemberController {
+public class MemberController extends Controller {
 
-	Connection conn;
-	Scanner sc;
-	String cmd;
-	Session session;
+	private Scanner sc;
+	private String cmd;
+	private Session session;
 
-	MemberService memberService;
+	private MemberService memberService;
 
 	public MemberController(Connection conn, Scanner sc, String cmd, Session session) {
-		this.conn = conn;
 		this.sc = sc;
 		this.cmd = cmd;
 		this.session = session;
@@ -28,7 +24,26 @@ public class MemberController {
 		memberService = new MemberService(conn);
 	}
 
-	public void doJoin() {
+	@Override
+	public void doAction() {
+
+		if (cmd.equals("member join")) {
+			doJoin();
+
+		} else if (cmd.equals("member login")) {
+			doLogin();
+
+		} else if (cmd.equals("member logout")) {
+			dologout();
+
+		} else if (cmd.equals("member whoami")) {
+			ShowWhoAmI();
+		} else {
+			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
+		}
+	}
+
+	private void doJoin() {
 
 		System.out.println("== 회원가입 ==");
 
@@ -125,7 +140,7 @@ public class MemberController {
 		System.out.printf("%s님 환영합니다!\n", name);
 	}
 
-	public void doLogin() {
+	private void doLogin() {
 
 		System.out.println("== 회원 로그인 ==");
 
@@ -199,7 +214,7 @@ public class MemberController {
 		System.out.printf("%s님 로그인되었습니다.\n", member.name);
 	}
 
-	public void dologout() {
+	private void dologout() {
 
 		if (session.loginedMember == null) {
 			System.out.println("현재 로그아웃 상태입니다.");
@@ -211,7 +226,7 @@ public class MemberController {
 		session.loginedMemberId = -1;
 	}
 
-	public void ShowWhoAmI() {
+	private void ShowWhoAmI() {
 
 		if (session.loginedMember == null) {
 			System.out.println("현재 로그아웃 상태입니다.");
