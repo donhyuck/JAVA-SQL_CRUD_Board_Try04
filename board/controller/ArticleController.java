@@ -27,21 +27,25 @@ public class ArticleController extends Controller {
 	@Override
 	public void doAction() {
 
-		if (cmd.equals("article write")) {
+		String actionName = cmd.split(" ")[1].trim();
+
+		switch (actionName) {
+		case "write":
 			doWrite();
-
-		} else if (cmd.equals("article list")) {
+			break;
+		case "list":
 			showList();
-
-		} else if (cmd.startsWith("article modify")) {
+			break;
+		case "modify":
 			doModify();
-
-		} else if (cmd.startsWith("article delete")) {
+			break;
+		case "delete":
 			doDelete();
-
-		} else if (cmd.startsWith("article detail")) {
+			break;
+		case "detail":
 			showDetail();
-		} else {
+			break;
+		default:
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
 

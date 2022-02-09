@@ -27,18 +27,22 @@ public class MemberController extends Controller {
 	@Override
 	public void doAction() {
 
-		if (cmd.equals("member join")) {
+		String actionName = cmd.split(" ")[1].trim();
+
+		switch (actionName) {
+		case "join":
 			doJoin();
-
-		} else if (cmd.equals("member login")) {
+			break;
+		case "login":
 			doLogin();
-
-		} else if (cmd.equals("member logout")) {
+			break;
+		case "logout":
 			dologout();
-
-		} else if (cmd.equals("member whoami")) {
+			break;
+		case "whoami":
 			ShowWhoAmI();
-		} else {
+			break;
+		default:
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
 	}
