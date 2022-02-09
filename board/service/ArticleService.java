@@ -38,4 +38,12 @@ public class ArticleService {
 		return articleDao.getArticle(id);
 	}
 
+	public void increaseHit(int id) {
+		articleDao.increaseHit(id);
+	}
+
+	public List<Article> getArticlesByKeyWord(String keyWord) {
+		return articleDao.getArticlesByKeyWord(keyWord);
+	}
+
 }

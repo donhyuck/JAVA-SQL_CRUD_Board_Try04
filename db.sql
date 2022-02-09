@@ -101,3 +101,22 @@ FROM article AS a
 LEFT JOIN `member` AS m
 ON a.memberId = m.id
 ORDER BY a.id DESC;
+
+#게시글 테이블 삭제
+DROP TABLE article;
+
+# 게시글 테이블에 memberId 추가
+ALTER TABLE article ADD COLUMN hit INT(10) UNSIGNED NOT NULL AFTER `body`;
+
+# 조회수 기능
+UPDATE article
+SET hit = hit+1
+WHERE id = 1;
+
+# 게시글 검색
+SELECT a.*, m.name AS extra_writer
+FROM article AS a
+LEFT JOIN `member` AS m
+ON a.memberId = m.id
+WHERE a.title LIKE CONCAT('%test1%')
+ORDER BY a.id DESC;
