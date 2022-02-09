@@ -43,7 +43,7 @@ public class ArticleController extends Controller {
 					System.out.println("게시글 번호를 숫자로 입력해주세요");
 					return;
 				}
-				
+
 			} else if (cmdBits.length == 2) {
 				System.out.println("게시글의 번호를 입력해주세요.");
 				return;
@@ -126,7 +126,15 @@ public class ArticleController extends Controller {
 			return;
 		}
 
-		System.out.println("== 게시글 수정 ==");
+		// 권한체크
+		Article article = articleService.getArticle(id);
+
+		if (article.getMemberId() != session.getLoginedMemberId()) {
+			System.out.printf("%s님은 %d번 게시글의 수정권한이 없습니다.\n", session.loginedMember.getName(), id);
+			return;
+		}
+
+		System.out.printf("== %d번 게시글 수정 ==\n", id);
 		System.out.print("새 제목 : ");
 		String title = sc.nextLine();
 		System.out.print("새 내용 : ");
@@ -145,6 +153,14 @@ public class ArticleController extends Controller {
 
 		if (foundArticleId == 0) {
 			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+			return;
+		}
+
+		// 권한체크
+		Article article = articleService.getArticle(id);
+
+		if (article.getMemberId() != session.getLoginedMemberId()) {
+			System.out.printf("%s님은 %d번 게시글의 삭제권한이 없습니다.\n", session.loginedMember.getName(), id);
 			return;
 		}
 
