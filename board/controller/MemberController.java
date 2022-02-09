@@ -31,9 +31,17 @@ public class MemberController extends Controller {
 
 		switch (actionName) {
 		case "join":
+			if (session.loginedMember != null) {
+				System.out.println("로그아웃 후 이용해주세요.");
+				return;
+			}
 			doJoin();
 			break;
 		case "login":
+			if (session.loginedMember != null) {
+				System.out.printf("%s 계정 로그인 상태! 로그이웃 후 이용해주세요.\n", session.loginedMember.getLoginId());
+				return;
+			}
 			doLogin();
 			break;
 		case "logout":

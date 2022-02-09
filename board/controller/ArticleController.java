@@ -27,7 +27,41 @@ public class ArticleController extends Controller {
 	@Override
 	public void doAction() {
 
-		String actionName = cmd.split(" ")[1].trim();
+		String[] cmdBits = cmd.split(" ");
+
+		String actionName = cmdBits[1];
+
+		switch (actionName) {
+		case "modify":
+		case "delete":
+		case "detail":
+
+			if (cmdBits.length == 3) {
+				boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
+
+				if (!isInt) {
+					System.out.println("게시글 번호를 숫자로 입력해주세요");
+					return;
+				}
+				
+			} else if (cmdBits.length == 2) {
+				System.out.println("게시글의 번호를 입력해주세요.");
+				return;
+
+			} else {
+				System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
+			}
+		}
+
+		switch (actionName) {
+		case "write":
+		case "modify":
+		case "delete":
+			if (session.loginedMember == null) {
+				System.out.println("로그인 후 이용해주세요.");
+				return;
+			}
+		}
 
 		switch (actionName) {
 		case "write":
@@ -83,13 +117,6 @@ public class ArticleController extends Controller {
 
 	private void doModify() {
 
-		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-
-		if (!isInt) {
-			System.out.println("게시글 번호를 숫자로 입력해주세요");
-			return;
-		}
-
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
 		int foundArticleId = articleService.getArticleCntById(id);
@@ -112,13 +139,6 @@ public class ArticleController extends Controller {
 
 	private void doDelete() {
 
-		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-
-		if (!isInt) {
-			System.out.println("게시글 번호를 숫자로 입력해주세요");
-			return;
-		}
-
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
 		int foundArticleId = articleService.getArticleCntById(id);
@@ -134,13 +154,6 @@ public class ArticleController extends Controller {
 	}
 
 	private void showDetail() {
-
-		boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
-
-		if (!isInt) {
-			System.out.println("게시글 번호를 숫자로 입력해주세요");
-			return;
-		}
 
 		int id = Integer.parseInt(cmd.split(" ")[2].trim());
 
