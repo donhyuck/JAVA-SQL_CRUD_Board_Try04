@@ -78,3 +78,26 @@ loginPw = 'admin',
 # 로그인
 SELECT * FROM `member`
 WHERE loginId = 'test3';
+
+# 게시글 테이블에 memberId 추가
+ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER updateDate;
+
+# 게시글 테이블 수정
+CREATE TABLE article (
+	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(id),
+	regDate DATETIME NOT NULL,
+	updateDate DATETIME NOT NULL,
+	memberId INT(10) UNSIGNED NOT NULL,
+	title VARCHAR(100) NOT NULL,
+	`body` TEXT NOT NULL
+);
+
+SELECT * FROM article;
+
+# 작성자를 게시글에 표시
+SELECT a.*, m.name AS extra_writer
+FROM article AS a
+LEFT JOIN `member` AS m
+ON a.memberId = m.id
+ORDER BY a.id DESC;

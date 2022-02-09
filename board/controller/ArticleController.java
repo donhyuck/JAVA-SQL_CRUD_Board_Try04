@@ -56,7 +56,7 @@ public class ArticleController extends Controller {
 		System.out.print("내용 : ");
 		String body = sc.nextLine();
 
-		int id = articleService.doWrite(title, body);
+		int id = articleService.doWrite(title, body, session.getLoginedMemberId());
 
 		System.out.printf("%d번 게시글이 등록되었습니다.\n", id);
 	}
@@ -71,9 +71,9 @@ public class ArticleController extends Controller {
 		}
 
 		System.out.println("== 게시글 목록 ==");
-		System.out.println("번호 / 제목 ");
+		System.out.println("번호 / 제목 / 작성자 ");
 		for (Article article : articles) {
-			System.out.printf(" %2d / %s \n", article.getId(), article.getTitle());
+			System.out.printf(" %2d / %s / %s \n", article.getId(), article.getTitle(), article.getExtra_writer());
 		}
 	}
 
