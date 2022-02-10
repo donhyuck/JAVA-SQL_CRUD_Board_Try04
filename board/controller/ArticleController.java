@@ -105,31 +105,55 @@ public class ArticleController extends Controller {
 		String keyWord = "";
 		List<Article> articles;
 
-		// 검색어가 있는 경우
-		if (cmdBits.length >= 3) {
-			keyWord = cmd.substring("article list ".length());
-			articles = articleService.getArticlesByKeyWord(keyWord);
-		}
-		
-		// 검색어가 없는 경우
-		else {
-			if (cmd.length() != 12) {
-				System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
+		// 게시글 목록을 페이지로 구현
+		int page = 1; // 시작은 1페이지 부터
+		int itemsPage = 5; // 한 페이지 당 게시글 갯수
+
+		while (true) {
+
+			// 검색어가 있는 경우
+			if (cmdBits.length >= 3) {
+				keyWord = cmd.substring("article list ".length());
+				articles = articleService.getArticlesByKeyWord(page, itemsPage, keyWord);
+			}
+
+			// 검색어가 없는 경우
+			else {
+				if (cmd.length() != 12) {
+					System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
+					return;
+				}
+				articles = articleService.getArticles(page, itemsPage);
+			}
+
+			if (articles.size() == 0) {
+				System.out.println("게시글이 존재하지 않습니다.");
 				return;
 			}
-			articles = articleService.getArticles();
+
+			System.out.println("== 게시글 목록 ==");
+			System.out.println("번호 / 제목 / 작성자 ");
+			for (Article article : articles) {
+				System.out.printf(" %2d / %s / %s \n", article.getId(), article.getTitle(), article.getExtra_writer());
+			}
+
+			// 페이지 이동 기능
+			int articleCnt = articleService.getArticlesCnt(keyWord); // 총 게시글 수
+			int lastPage = (int) Math.ceil(articleCnt / (double) itemsPage); // 마지막 페이지
+
+			System.out.printf("페이지 %d / %d, 게시글 %d건\n", page, lastPage, articleCnt);
+			System.out.println("\n>> [나가기] 0 이하 입력 [페이지 이동] 페이지 번호 입력 ");
+			System.out.print("[article list] 명령어 : ");
+			page = sc.nextInt();
+
+			sc.nextLine();
+
+			if (page <= 0) {
+				System.out.println("게시글 페이지를 나갑니다.");
+				break;
+			}
 		}
 
-		if (articles.size() == 0) {
-			System.out.println("게시글이 존재하지 않습니다.");
-			return;
-		}
-
-		System.out.println("== 게시글 목록 ==");
-		System.out.println("번호 / 제목 / 작성자 ");
-		for (Article article : articles) {
-			System.out.printf(" %2d / %s / %s \n", article.getId(), article.getTitle(), article.getExtra_writer());
-		}
 	}
 
 	private void doModify() {

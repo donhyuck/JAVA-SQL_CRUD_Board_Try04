@@ -22,8 +22,10 @@ public class ArticleService {
 		return articleDao.doWrite(title, body, loginedMemberId);
 	}
 
-	public List<Article> getArticles() {
-		return articleDao.getArticles();
+	public List<Article> getArticles(int page, int itemsPage) {
+		int limitFrom = (page - 1) * itemsPage;
+		int limitTake = itemsPage;
+		return articleDao.getArticles(limitFrom, limitTake);
 	}
 
 	public void doModify(int id, String title, String body) {
@@ -42,8 +44,14 @@ public class ArticleService {
 		articleDao.increaseHit(id);
 	}
 
-	public List<Article> getArticlesByKeyWord(String keyWord) {
-		return articleDao.getArticlesByKeyWord(keyWord);
+	public List<Article> getArticlesByKeyWord(int page, int itemsPage, String keyWord) {
+		int limitFrom = (page - 1) * itemsPage;
+		int limitTake = itemsPage;
+		return articleDao.getArticlesByKeyWord(limitFrom, limitTake, keyWord);
+	}
+
+	public int getArticlesCnt(String keyWord) {
+		return articleDao.getArticlesCnt(keyWord);
 	}
 
 }

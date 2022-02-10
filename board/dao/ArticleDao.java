@@ -42,7 +42,7 @@ public class ArticleDao {
 		return DBUtil.insert(conn, sql);
 	}
 
-	public List<Article> getArticles() {
+	public List<Article> getArticles(int limitFrom, int limitTake) {
 
 		List<Article> articles = new ArrayList<>();
 
@@ -52,6 +52,7 @@ public class ArticleDao {
 		sql.append("LEFT JOIN `member` AS m");
 		sql.append("ON a.memberId = m.id");
 		sql.append("ORDER BY a.id DESC");
+		sql.append("LIMIT ?,?", limitFrom, limitTake);
 
 		List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
 
@@ -86,7 +87,10 @@ public class ArticleDao {
 	public Article getArticle(int id) {
 
 		SecSql sql = new SecSql();
-		sql.append("SELECT * FROM article");
+		sql.append("SELECT a.*, m.name AS extra_writer");
+		sql.append("FROM article AS a");
+		sql.append("LEFT JOIN `member` AS m");
+		sql.append("ON a.memberId = m.id");
 		sql.append("WHERE id = ?", id);
 
 		Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
@@ -106,7 +110,7 @@ public class ArticleDao {
 
 	}
 
-	public List<Article> getArticlesByKeyWord(String keyWord) {
+	public List<Article> getArticlesByKeyWord(int limitFrom, int limitTake, String keyWord) {
 
 		SecSql sql = new SecSql();
 		sql.append("SELECT a.*, m.name AS extra_writer");
@@ -115,6 +119,7 @@ public class ArticleDao {
 		sql.append("ON a.memberId = m.id");
 		sql.append("WHERE a.title LIKE CONCAT('%',?,'%')", keyWord);
 		sql.append("ORDER BY a.id DESC");
+		sql.append("LIMIT ?,?", limitFrom, limitTake);
 
 		List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
 
@@ -125,6 +130,19 @@ public class ArticleDao {
 		}
 
 		return articles;
+	}
+
+	public int getArticlesCnt(String keyWord) {
+
+		SecSql sql = new SecSql();
+		sql.append("SELECT COUNT(*)");
+		sql.append("FROM article");
+
+		if (keyWord != "") {
+			sql.append("WHERE title LIKE CONCAT('%',?,'%')", keyWord);
+		}
+
+		return DBUtil.selectRowIntValue(conn, sql);
 	}
 
 }

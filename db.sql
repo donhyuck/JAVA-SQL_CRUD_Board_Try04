@@ -120,3 +120,16 @@ LEFT JOIN `member` AS m
 ON a.memberId = m.id
 WHERE a.title LIKE CONCAT('%test1%')
 ORDER BY a.id DESC;
+
+# 게시글 검색+페이징
+SELECT a.*, m.name AS extra_writer
+FROM article AS a
+LEFT JOIN `member` AS m
+ON a.memberId = m.id
+WHERE a.title LIKE CONCAT('%%')
+ORDER BY a.id DESC
+LIMIT 2,5;
+
+# 게시글 갯수
+SELECT COUNT(*)
+FROM article;
