@@ -322,6 +322,10 @@ public class ArticleController extends Controller {
 
 		Article article = articleService.getArticle(id);
 
+		// 해당 게시글의 추천/비추천 수
+		int likeCnt = articleService.getLikeCnt(id, 1);
+		int disLikeCnt = articleService.getLikeCnt(id, 2);
+
 		System.out.printf("== %d번 게시글 상세보기 ==\n", id);
 		System.out.printf("번 호 : %d\n", article.getId());
 		System.out.printf("등록일 : %s\n", article.getRegDate());
@@ -329,6 +333,7 @@ public class ArticleController extends Controller {
 		System.out.printf("제 목 : %s\n", article.getTitle());
 		System.out.printf("내 용 : %s\n", article.getBody());
 		System.out.printf("조회수 : %d\n", article.getHit());
+		System.out.printf(" 추천 [ %d건 ] 비추천 [ %d건 ] \n", likeCnt, disLikeCnt);
 
 	}
 }

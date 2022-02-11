@@ -71,4 +71,8 @@ public class ArticleService {
 		articleDao.modifyLike(id, likeType, loginedMemberId);
 	}
 
+	public int getLikeCnt(int id, int likeType) {
+		return articleDao.getLikeCnt(id, likeType);
+	}
+
 }

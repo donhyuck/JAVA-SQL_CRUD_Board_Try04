@@ -177,3 +177,8 @@ UPDATE `like`
 SET updateDate = NOW(),
 likeType = 2
 WHERE articleId = 1 AND memberId = 1;
+
+# 추천/비추천 수
+SELECT COUNT(*) likeCnt
+FROM `like`
+WHERE articleId = 1 AND likeType = 1;
