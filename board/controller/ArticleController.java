@@ -35,6 +35,7 @@ public class ArticleController extends Controller {
 		case "modify":
 		case "delete":
 		case "detail":
+		case "like":
 
 			if (cmdBits.length == 3) {
 				boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
@@ -57,6 +58,7 @@ public class ArticleController extends Controller {
 		case "write":
 		case "modify":
 		case "delete":
+		case "like":
 			if (session.loginedMember == null) {
 				System.out.println("로그인 후 이용해주세요.");
 				return;
@@ -79,8 +81,95 @@ public class ArticleController extends Controller {
 		case "detail":
 			showDetail();
 			break;
+		case "like":
+			doLike();
+			break;
 		default:
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
+		}
+
+	}
+
+	private void doLike() {
+
+		int id = Integer.parseInt(cmd.split(" ")[2].trim());
+
+		int foundArticleId = articleService.getArticleCntById(id);
+
+		if (foundArticleId == 0) {
+			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+			return;
+		}
+
+		while (true) {
+
+			System.out.printf("== %d번 게시글 추천/비추천 ==\n", id);
+			System.out.println("가이드 >> [나가기] 0 [추천] 1 [비추천] 2 [해제] 3 ");
+			System.out.print("[article like] 명령어 : ");
+
+			// 숫자만 입력받기
+			while (!sc.hasNextInt()) {
+				sc.nextLine();
+				System.out.println("명령어를 숫자로 입력해주세요.");
+				System.out.print("[article like] 명령어 : ");
+				continue;
+			}
+
+			int likeType = sc.nextInt();
+			sc.nextLine();
+
+			if (likeType == 0) {
+				System.out.println("== 게시글 추천/비추천 종료 ==");
+				return;
+
+			}
+
+			// 중복 추천/반대를 막아야함
+			// 해당 게시글에 대한 로그인 중인 회원의 추천/비추천 여부를 알아야한다.
+			int likeCheck = articleService.likeCheck(id, session.getLoginedMemberId());
+			String userMsg = (likeType == 1 ? "추천" : "비추천");
+
+			if (likeCheck == 0) {
+
+				if (likeType == 1 || likeType == 2) {
+
+					articleService.insertLike(id, likeType, session.getLoginedMemberId());
+
+					System.out.printf("%s님이 %d번 글을 %s했습니다.\n", session.loginedMember.getName(), id, userMsg);
+					return;
+
+				} else if (likeType == 3) {
+					System.out.println("해제할 추천/비추천이 없습니다.");
+					return;
+
+				} else {
+					System.out.println("가이드에 해당하는 숫자를 입력해주세요.\n");
+				}
+
+			} else {
+
+				if (likeType == 3) {
+					articleService.deleteLike(id, session.getLoginedMemberId());
+					String resultMsg = (likeCheck == 1 ? "추천" : "비추천");
+					System.out.printf("%s을 취소합니다.\n", userMsg);
+					return;
+				}
+
+				// 사용자 입력한 명령어와 추천/비추천여부 간의 비교
+				// 중복 명령방지
+				if (likeType == likeCheck) {
+
+					System.out.printf("%s님은 %d번 게시글을 이미 %s했습니다.\n", session.getLoginedMember().getName(), id, userMsg);
+					return;
+
+				} else {
+
+					articleService.modifyLike(id, likeType, session.getLoginedMemberId()); // 추천/비추천 변경
+					System.out.printf("%d번 글을 %s으로 변경합니다.\n", id, userMsg);
+					return;
+				}
+			}
+
 		}
 
 	}
@@ -142,10 +231,18 @@ public class ArticleController extends Controller {
 			int lastPage = (int) Math.ceil(articleCnt / (double) itemsPage); // 마지막 페이지
 
 			System.out.printf("페이지 %d / %d, 게시글 %d건\n", page, lastPage, articleCnt);
-			System.out.println("\n>> [나가기] 0 이하 입력 [페이지 이동] 페이지 번호 입력 ");
+			System.out.println("가이드 >> [나가기] 0 이하 입력 [페이지 이동] 페이지 번호 입력 ");
 			System.out.print("[article list] 명령어 : ");
-			page = sc.nextInt();
 
+			// 페이지 번호만 입력받기
+			while (!sc.hasNextInt()) {
+				sc.nextLine();
+				System.out.println("페이지 번호를 숫자로 입력해주세요.");
+				System.out.print("[article list] 명령어 : ");
+				continue;
+			}
+
+			page = sc.nextInt();
 			sc.nextLine();
 
 			if (page <= 0) {

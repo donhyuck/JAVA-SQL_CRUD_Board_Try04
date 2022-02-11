@@ -133,3 +133,47 @@ LIMIT 2,5;
 # 게시글 갯수
 SELECT COUNT(*)
 FROM article;
+
+# 추천/반대 테이블 삭제
+DELETE FROM `like`;
+DROP TABLE `like`;
+
+# 추천/반대 테이블 생성
+# likeType  = 1 추천 / likeType  = 2 반대
+CREATE TABLE `like` (
+	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(id),
+	regDate DATETIME NOT NULL,
+	updateDate DATETIME NOT NULL,
+	articleId INT(10) UNSIGNED NOT NULL,
+	memberId INT(10) UNSIGNED NOT NULL,
+	likeType TINYINT(1) NOT NULL
+);
+
+DESC `like`;
+SELECT * FROM `like`;
+
+# 게시글 추천/비추천
+INSERT INTO `like`
+SET regDate = NOW(),
+updateDate = NOW(),
+articleId = 1,
+memberId = 1,
+likeType = 1;
+
+# 로그인 중인 회원의 해당 게시글에 대한 추천/반대 여부
+SELECT
+CASE WHEN COUNT(*) != 0
+THEN likeType ELSE 0 END likeCheck
+FROM `like`
+WHERE articleId = 1 AND memberId = 2;
+
+# 추천/비추천 해제
+DELETE FROM `like`
+WHERE id = 1 AND memberId = 2;
+
+# 추천/비추천 변경
+UPDATE `like`
+SET updateDate = NOW(),
+likeType = 2
+WHERE articleId = 1 AND memberId = 1;

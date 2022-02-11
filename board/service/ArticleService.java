@@ -5,6 +5,7 @@ import java.util.List;
 
 import board.dao.ArticleDao;
 import board.dto.Article;
+import board.dto.Member;
 
 public class ArticleService {
 
@@ -52,6 +53,22 @@ public class ArticleService {
 
 	public int getArticlesCnt(String keyWord) {
 		return articleDao.getArticlesCnt(keyWord);
+	}
+
+	public int likeCheck(int id, int loginedMemberId) {
+		return articleDao.likeCheck(id, loginedMemberId);
+	}
+
+	public void insertLike(int id, int likeType, int loginedMemberId) {
+		articleDao.insertLike(id, likeType, loginedMemberId);
+	}
+
+	public void deleteLike(int id, int loginedMemberId) {
+		articleDao.deleteLike(id, loginedMemberId);
+	}
+
+	public void modifyLike(int id, int likeType, int loginedMemberId) {
+		articleDao.modifyLike(id, likeType, loginedMemberId);
 	}
 
 }
