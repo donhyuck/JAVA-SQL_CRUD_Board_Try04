@@ -1,6 +1,7 @@
 package board.controller;
 
 import java.sql.Connection;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,6 +37,7 @@ public class ArticleController extends Controller {
 		case "delete":
 		case "detail":
 		case "like":
+		case "comment":
 
 			if (cmdBits.length == 3) {
 				boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
@@ -59,6 +61,7 @@ public class ArticleController extends Controller {
 		case "modify":
 		case "delete":
 		case "like":
+		case "comment":
 			if (session.loginedMember == null) {
 				System.out.println("로그인 후 이용해주세요.");
 				return;
@@ -84,8 +87,60 @@ public class ArticleController extends Controller {
 		case "like":
 			doLike();
 			break;
+		case "comment":
+			doComment();
+			break;
 		default:
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
+		}
+
+	}
+
+	private void doComment() {
+
+		int id = Integer.parseInt(cmd.split(" ")[2].trim());
+
+		int foundArticleId = articleService.getArticleCntById(id);
+
+		if (foundArticleId == 0) {
+			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+			return;
+		}
+
+		while (true) {
+
+			System.out.printf("== %d번 게시글 댓글 ==\n", id);
+			System.out.println("가이드 >>[나가기] 0 [작성] 1 [수정] 2 [삭제] 3 [목록] 4");
+
+			int commentType;
+
+			while (true) {
+				try {
+					System.out.print("[article comment] 명령어 : ");
+					commentType = new Scanner(System.in).nextInt();
+					break;
+
+				} catch (InputMismatchException e) {
+					System.out.println("명령어를 숫자로 입력해주세요.");
+				}
+			}
+
+			if (commentType == 0) {
+				System.out.println("== 게시글 댓글 종료 ==");
+				return;
+			}
+
+			if (commentType == 1) {
+				System.out.println("== 댓글 작성 ==");
+			} else if (commentType == 2) {
+				System.out.println("== 댓글 수정 ==");
+			} else if (commentType == 3) {
+				System.out.println("== 댓글 삭제 ==");
+			} else if (commentType == 4) {
+				System.out.println("== 댓글 목 ==");
+			} else {
+				System.out.println("가이드에 해당하는 숫자를 입력해주세요.");
+			}
 		}
 
 	}
@@ -151,7 +206,7 @@ public class ArticleController extends Controller {
 				if (likeType == 3) {
 					articleService.deleteLike(id, session.getLoginedMemberId());
 					String resultMsg = (likeCheck == 1 ? "추천" : "비추천");
-					System.out.printf("%s을 취소합니다.\n", userMsg);
+					System.out.printf("%s을 취소합니다.\n", resultMsg);
 					return;
 				}
 
