@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import board.dto.Article;
+import board.dto.Comment;
 import board.service.ArticleService;
 import board.session.Session;
 
@@ -171,6 +172,14 @@ public class ArticleController extends Controller {
 					continue;
 				}
 
+				// 댓글 작성자에게 권한부여
+				Comment comment = articleService.getCommentById(commentId);
+
+				if (comment.getMemberId() != session.getLoginedMemberId()) {
+					System.out.println("해당 댓글에 대한 권한이 없습니다.");
+					continue;
+				}
+
 				System.out.println("== 댓글 수정 ==");
 				System.out.print("새 내용 : ");
 				String commentBody = sc.nextLine();
@@ -205,6 +214,14 @@ public class ArticleController extends Controller {
 
 				if (commentCheck == 0) {
 					System.out.printf("%d번 댓글을 찾을 수 없습니다.\n", commentId);
+					continue;
+				}
+
+				// 댓글 작성자에게 권한부여
+				Comment comment = articleService.getCommentById(commentId);
+
+				if (comment.getMemberId() != session.getLoginedMemberId()) {
+					System.out.println("해당 댓글에 대한 권한이 없습니다.");
 					continue;
 				}
 

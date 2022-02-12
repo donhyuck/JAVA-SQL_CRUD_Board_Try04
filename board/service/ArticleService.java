@@ -5,6 +5,7 @@ import java.util.List;
 
 import board.dao.ArticleDao;
 import board.dto.Article;
+import board.dto.Comment;
 import board.dto.Member;
 
 public class ArticleService {
@@ -89,6 +90,10 @@ public class ArticleService {
 
 	public void doDeleteComment(int commentId) {
 		articleDao.doDeleteComment(commentId);
+	}
+
+	public Comment getCommentById(int commentId) {
+		return articleDao.getCommentById(commentId);
 	}
 
 }

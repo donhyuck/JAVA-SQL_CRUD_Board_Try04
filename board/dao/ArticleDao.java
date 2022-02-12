@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import board.dto.Article;
+import board.dto.Comment;
 import board.util.DBUtil;
 import board.util.SecSql;
 
@@ -241,6 +242,18 @@ public class ArticleDao {
 		sql.append("WHERE id = ?", commentId);
 
 		DBUtil.delete(conn, sql);
+	}
+
+	public Comment getCommentById(int commentId) {
+
+		SecSql sql = new SecSql();
+		sql.append("SELECT *");
+		sql.append("FROM `comment`");
+		sql.append("WHERE id = ?", commentId);
+
+		Map<String, Object> commentMap = DBUtil.selectRow(conn, sql);
+
+		return new Comment(commentMap);
 	}
 
 }
