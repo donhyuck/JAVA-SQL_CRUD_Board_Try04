@@ -131,13 +131,57 @@ public class ArticleController extends Controller {
 			}
 
 			if (commentType == 1) {
+
 				System.out.println("== 댓글 작성 ==");
+
+				System.out.print("댓글 내용 : ");
+				String commentBody = sc.nextLine();
+
+				int commentId = articleService.doWriteComment(id, session.getLoginedMemberId(), commentBody);
+
+				System.out.printf("%d번 게시글의 %d번 댓글이 등록되었습니다.\n", id, commentId);
+
 			} else if (commentType == 2) {
+
+				// 수정할 댓글 번호 입력받기 전 댓글목록 보기
+				// 작업 예정
+
+				// 수정할 댓글 번호 입력받기
+				int commentId;
+				while (true) {
+					try {
+						System.out.print("가이드 >>[나가기] 0 [댓글수정] 댓글번호 입력 : ");
+						commentId = new Scanner(System.in).nextInt();
+						break;
+
+					} catch (InputMismatchException e) {
+						System.out.println("수정할 댓글의 번호를 숫자로 입력해주세요.");
+					}
+				}
+
+				if (commentId == 0) {
+					continue;
+				}
+
+				// 댓글 확인
+				int commentCheck = articleService.getCommentCheckById(commentId, id);
+
+				if (commentCheck == 0) {
+					System.out.printf("%d번 댓글을 찾을 수 없습니다.\n", commentId);
+				}
+
 				System.out.println("== 댓글 수정 ==");
+				System.out.print("새 내용 : ");
+				String commentBody = sc.nextLine();
+
+				articleService.doModifyComment(commentId, commentBody);
+
+				System.out.printf("%d번 게시글의 %d번 댓글이 수정되었습니다.\n", id, commentId);
+
 			} else if (commentType == 3) {
 				System.out.println("== 댓글 삭제 ==");
 			} else if (commentType == 4) {
-				System.out.println("== 댓글 목 ==");
+				System.out.println("== 댓글 목록 ==");
 			} else {
 				System.out.println("가이드에 해당하는 숫자를 입력해주세요.");
 			}

@@ -182,3 +182,40 @@ WHERE articleId = 1 AND memberId = 1;
 SELECT COUNT(*) likeCnt
 FROM `like`
 WHERE articleId = 1 AND likeType = 1;
+
+# 댓글 테이블 삭제
+DELETE FROM `comment`;
+DROP TABLE `comment`;
+
+# 댓글 테이블 생성
+CREATE TABLE `comment` (
+	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(id),
+	regDate DATETIME NOT NULL,
+	updateDate DATETIME NOT NULL,
+	articleId INT(10) UNSIGNED NOT NULL,
+	memberId INT(10) UNSIGNED NOT NULL,
+	commentBody VARCHAR(200) NOT NULL
+);
+
+DESC `comment`;
+SELECT * FROM `comment`;
+
+# 댓글 작성
+INSERT INTO `comment`
+SET regDate=NOW(),
+updateDate=NOW(),
+articleId = 1,
+memberId = 2,
+commentBody = 'first comment';
+
+# 해당 게시글의 입력한 댓글번호가 있는지 확인
+SELECT COUNT(*)
+FROM `comment`
+WHERE id = 1 AND articleId = 10;
+
+# 댓글 수정
+UPDATE `comment`
+SET updateDate = NOW(),
+commentBody = 'modify comment'
+WHERE id = 1;

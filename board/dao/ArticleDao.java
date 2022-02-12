@@ -200,4 +200,38 @@ public class ArticleDao {
 		return DBUtil.selectRowIntValue(conn, sql);
 	}
 
+	public int doWriteComment(int id, int loginedMemberId, String commentBody) {
+
+		SecSql sql = new SecSql();
+		sql.append("INSERT INTO `comment`");
+		sql.append("SET regDate=NOW()");
+		sql.append(", updateDate=NOW()");
+		sql.append(", articleId = ?", id);
+		sql.append(", memberId = ?", loginedMemberId);
+		sql.append(", commentBody = ?", commentBody);
+
+		return DBUtil.insert(conn, sql);
+	}
+
+	public int getCommentCheckById(int commentId, int id) {
+
+		SecSql sql = new SecSql();
+		sql.append("SELECT COUNT(*)");
+		sql.append("FROM `comment`");
+		sql.append("WHERE id = ? AND articleId = ?", commentId, id);
+
+		return DBUtil.selectRowIntValue(conn, sql);
+	}
+
+	public void doModifyComment(int commentId, String commentBody) {
+
+		SecSql sql = new SecSql();
+		sql.append("UPDATE `comment`");
+		sql.append("SET updateDate = NOW()");
+		sql.append(", commentBody = ?", commentBody);
+		sql.append("WHERE id = ?", commentId);
+
+		DBUtil.update(conn, sql);
+	}
+
 }
