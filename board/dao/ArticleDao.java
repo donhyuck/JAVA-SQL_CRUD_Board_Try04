@@ -234,4 +234,13 @@ public class ArticleDao {
 		DBUtil.update(conn, sql);
 	}
 
+	public void doDeleteComment(int commentId) {
+
+		SecSql sql = new SecSql();
+		sql.append("DELETE FROM `comment`");
+		sql.append("WHERE id = ?", commentId);
+
+		DBUtil.delete(conn, sql);
+	}
+
 }

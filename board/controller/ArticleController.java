@@ -168,6 +168,7 @@ public class ArticleController extends Controller {
 
 				if (commentCheck == 0) {
 					System.out.printf("%d번 댓글을 찾을 수 없습니다.\n", commentId);
+					continue;
 				}
 
 				System.out.println("== 댓글 수정 ==");
@@ -179,7 +180,37 @@ public class ArticleController extends Controller {
 				System.out.printf("%d번 게시글의 %d번 댓글이 수정되었습니다.\n", id, commentId);
 
 			} else if (commentType == 3) {
+
 				System.out.println("== 댓글 삭제 ==");
+
+				// 삭제할 댓글 번호 입력받기
+				int commentId;
+				while (true) {
+					try {
+						System.out.print("가이드 >>[나가기] 0 [댓글삭제] 댓글번호 입력 : ");
+						commentId = new Scanner(System.in).nextInt();
+						break;
+
+					} catch (InputMismatchException e) {
+						System.out.println("삭제할 댓글의 번호를 숫자로 입력해주세요.");
+					}
+				}
+
+				if (commentId == 0) {
+					continue;
+				}
+
+				// 댓글 확인
+				int commentCheck = articleService.getCommentCheckById(commentId, id);
+
+				if (commentCheck == 0) {
+					System.out.printf("%d번 댓글을 찾을 수 없습니다.\n", commentId);
+					continue;
+				}
+
+				articleService.doDeleteComment(commentId);
+				System.out.printf("%d번 게시글의 %d번 댓글이 삭제되었습니다.\n", id, commentId);
+
 			} else if (commentType == 4) {
 				System.out.println("== 댓글 목록 ==");
 			} else {

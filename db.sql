@@ -219,3 +219,7 @@ UPDATE `comment`
 SET updateDate = NOW(),
 commentBody = 'modify comment'
 WHERE id = 1;
+
+# 댓글 삭제
+DELETE FROM `comment`
+WHERE id = 3;

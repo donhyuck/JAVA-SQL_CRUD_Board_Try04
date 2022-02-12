@@ -87,4 +87,8 @@ public class ArticleService {
 		articleDao.doModifyComment(commentId, commentBody);
 	}
 
+	public void doDeleteComment(int commentId) {
+		articleDao.doDeleteComment(commentId);
+	}
+
 }
