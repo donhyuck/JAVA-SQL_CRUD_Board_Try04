@@ -37,7 +37,6 @@ public class ArticleController extends Controller {
 		case "modify":
 		case "delete":
 		case "detail":
-		case "like":
 
 			if (cmdBits.length == 3) {
 				boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
@@ -60,7 +59,6 @@ public class ArticleController extends Controller {
 		case "write":
 		case "modify":
 		case "delete":
-		case "like":
 			if (session.loginedMember == null) {
 				System.out.println("로그인 후 이용해주세요.");
 				return;
@@ -83,9 +81,6 @@ public class ArticleController extends Controller {
 		case "detail":
 			showDetail();
 			break;
-		case "like":
-			doLike();
-			break;
 		default:
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
@@ -96,8 +91,8 @@ public class ArticleController extends Controller {
 
 		while (true) {
 
-			System.out.printf("== %d번 게시글 댓글 ==\n", id);
-			System.out.println("가이드 >>[나가기] 0 [작성] 1 [수정] 2 [삭제] 3 [목록] 4");
+			System.out.printf("== %d번 게시글 댓글 및 추천/비추천 ==\n", id);
+			System.out.println("가이드 >>[나가기] 0 [작성] 1 [수정] 2 [삭제] 3 [목록] 4 [추천/비추천] 5");
 
 			int actionType;
 
@@ -121,7 +116,7 @@ public class ArticleController extends Controller {
 
 				if (session.loginedMember == null) {
 					System.out.println("로그인 후 이용해주세요.");
-					return;
+					continue;
 				}
 
 				System.out.println("== 댓글 작성 ==");
@@ -137,7 +132,7 @@ public class ArticleController extends Controller {
 
 				if (session.loginedMember == null) {
 					System.out.println("로그인 후 이용해주세요.");
-					return;
+					continue;
 				}
 
 				// 수정할 댓글 번호 입력받기
@@ -185,7 +180,7 @@ public class ArticleController extends Controller {
 
 				if (session.loginedMember == null) {
 					System.out.println("로그인 후 이용해주세요.");
-					return;
+					continue;
 				}
 
 				System.out.println("== 댓글 삭제 ==");
@@ -275,6 +270,10 @@ public class ArticleController extends Controller {
 
 				}
 
+			} else if (actionType == 5) {
+
+				doLike(id);
+
 			} else {
 				System.out.println("가이드에 해당하는 숫자를 입력해주세요.");
 			}
@@ -282,14 +281,10 @@ public class ArticleController extends Controller {
 
 	}
 
-	private void doLike() {
+	private void doLike(int id) {
 
-		int id = Integer.parseInt(cmd.split(" ")[2].trim());
-
-		int foundArticleId = articleService.getArticleCntById(id);
-
-		if (foundArticleId == 0) {
-			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+		if (session.loginedMember == null) {
+			System.out.println("로그인 후 이용해주세요.");
 			return;
 		}
 
@@ -297,13 +292,13 @@ public class ArticleController extends Controller {
 
 			System.out.printf("== %d번 게시글 추천/비추천 ==\n", id);
 			System.out.println("가이드 >> [나가기] 0 [추천] 1 [비추천] 2 [해제] 3 ");
-			System.out.print("[article like] 명령어 : ");
+			System.out.print("[article detail like] 명령어 : ");
 
 			// 숫자만 입력받기
 			while (!sc.hasNextInt()) {
 				sc.nextLine();
 				System.out.println("명령어를 숫자로 입력해주세요.");
-				System.out.print("[article like] 명령어 : ");
+				System.out.print("[article detail like] 명령어 : ");
 				continue;
 			}
 
