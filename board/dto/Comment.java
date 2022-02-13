@@ -11,6 +11,7 @@ public class Comment {
 	private int articleId;
 	private int memberId;
 	private String commentBody;
+	private String extra_writer;
 
 	public Comment(Map<String, Object> commentMap) {
 		this.id = (int) commentMap.get("id");
@@ -19,6 +20,7 @@ public class Comment {
 		this.articleId = (int) commentMap.get("articleId");
 		this.memberId = (int) commentMap.get("memberId");
 		this.commentBody = (String) commentMap.get("commentBody");
+		this.extra_writer = (String) commentMap.get("extra_writer");
 	}
 
 	public int getId() {
@@ -67,5 +69,13 @@ public class Comment {
 
 	public void setCommentBody(String commentBody) {
 		this.commentBody = commentBody;
+	}
+
+	public String getExtra_writer() {
+		return extra_writer;
+	}
+
+	public void setExtra_writer(String extra_writer) {
+		this.extra_writer = extra_writer;
 	}
 }

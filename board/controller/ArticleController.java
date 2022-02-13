@@ -229,7 +229,54 @@ public class ArticleController extends Controller {
 				System.out.printf("%d번 게시글의 %d번 댓글이 삭제되었습니다.\n", id, commentId);
 
 			} else if (commentType == 4) {
-				System.out.println("== 댓글 목록 ==");
+
+				int page = 1;
+				int itemsPage = 5;
+
+				while (true) {
+
+					List<Comment> pageComments = articleService.getCommentsByPage(id, page, itemsPage);
+
+					if (pageComments.size() == 0) {
+						System.out.println("등록된 댓글이 없습니다.");
+						break;
+					}
+
+					System.out.printf("= %d번 게시글 댓글보기 =\n", id);
+					System.out.println("번호 / 작성자 /  등록일 ");
+
+					for (Comment comment : pageComments) {
+						System.out.printf(" %2d / %s / %s\n", comment.getId(), comment.getExtra_writer(),
+								comment.getRegDate().toLocalDate());
+						System.out.println("내용 : " + comment.getCommentBody());
+					}
+
+					// 전체 댓글수
+					int commentsCnt = articleService.getCommentsCnt(id);
+					int lastCommentPage = (int) Math.ceil((commentsCnt / (double) itemsPage));
+
+					System.out.printf("페이지 %d / %d, 댓글 %d건\n", page, lastCommentPage, commentsCnt);
+					System.out.println("가이드 >> [나가기] 0 이하 입력 [페이지 이동] 페이지 번호 입력 ");
+					System.out.print("[article comment] 명령어 : ");
+
+					// 페이지 번호만 입력받기
+					while (!sc.hasNextInt()) {
+						sc.nextLine();
+						System.out.println("페이지 번호를 숫자로 입력해주세요.");
+						System.out.print("[article list] 명령어 : ");
+						continue;
+					}
+
+					page = sc.nextInt();
+					sc.nextLine();
+
+					if (page <= 0) {
+						System.out.println("댓글 페이지를 나갑니다.");
+						break;
+					}
+
+				}
+
 			} else {
 				System.out.println("가이드에 해당하는 숫자를 입력해주세요.");
 			}

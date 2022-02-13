@@ -256,4 +256,36 @@ public class ArticleDao {
 		return new Comment(commentMap);
 	}
 
+	public List<Comment> getCommentsByPage(int id, int limitFrom, int limitTake) {
+
+		SecSql sql = new SecSql();
+		sql.append("SELECT c.*,m.name AS extra_writer");
+		sql.append("FROM `comment` c");
+		sql.append("INNER JOIN `member` m");
+		sql.append("ON c.memberId = m.id");
+		sql.append("WHERE c.articleId = ?", id);
+		sql.append("ORDER BY c.id DESC");
+		sql.append("LIMIT ?,?", limitFrom, limitTake);
+
+		List<Map<String, Object>> commentListMap = DBUtil.selectRows(conn, sql);
+
+		List<Comment> comments = new ArrayList<>();
+
+		for (Map<String, Object> commentMap : commentListMap) {
+			comments.add(new Comment(commentMap));
+		}
+
+		return comments;
+	}
+
+	public int getCommentsCnt(int id) {
+
+		SecSql sql = new SecSql();
+		sql.append("SELECT COUNT(*)");
+		sql.append("FROM `comment`");
+		sql.append("WHERE articleId = ?", id);
+
+		return DBUtil.selectRowIntValue(conn, sql);
+	}
+
 }

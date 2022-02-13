@@ -96,4 +96,15 @@ public class ArticleService {
 		return articleDao.getCommentById(commentId);
 	}
 
+	public List<Comment> getCommentsByPage(int id, int page, int itemsPage) {
+
+		int limitFrom = (page - 1) * itemsPage;
+		int limitTake = itemsPage;
+		return articleDao.getCommentsByPage(id, limitFrom, limitTake);
+	}
+
+	public int getCommentsCnt(int id) {
+		return articleDao.getCommentsCnt(id);
+	}
+
 }
