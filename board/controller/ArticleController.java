@@ -38,7 +38,6 @@ public class ArticleController extends Controller {
 		case "delete":
 		case "detail":
 		case "like":
-		case "comment":
 
 			if (cmdBits.length == 3) {
 				boolean isInt = cmd.split(" ")[2].matches("-?\\d+");
@@ -62,7 +61,6 @@ public class ArticleController extends Controller {
 		case "modify":
 		case "delete":
 		case "like":
-		case "comment":
 			if (session.loginedMember == null) {
 				System.out.println("로그인 후 이용해주세요.");
 				return;
@@ -88,37 +86,25 @@ public class ArticleController extends Controller {
 		case "like":
 			doLike();
 			break;
-		case "comment":
-			doComment();
-			break;
 		default:
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
 
 	}
 
-	private void doComment() {
-
-		int id = Integer.parseInt(cmd.split(" ")[2].trim());
-
-		int foundArticleId = articleService.getArticleCntById(id);
-
-		if (foundArticleId == 0) {
-			System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
-			return;
-		}
+	private void doDetailAction(int id) {
 
 		while (true) {
 
 			System.out.printf("== %d번 게시글 댓글 ==\n", id);
 			System.out.println("가이드 >>[나가기] 0 [작성] 1 [수정] 2 [삭제] 3 [목록] 4");
 
-			int commentType;
+			int actionType;
 
 			while (true) {
 				try {
-					System.out.print("[article comment] 명령어 : ");
-					commentType = new Scanner(System.in).nextInt();
+					System.out.print("[article detail] 명령어 : ");
+					actionType = new Scanner(System.in).nextInt();
 					break;
 
 				} catch (InputMismatchException e) {
@@ -126,12 +112,17 @@ public class ArticleController extends Controller {
 				}
 			}
 
-			if (commentType == 0) {
-				System.out.println("== 게시글 댓글 종료 ==");
+			if (actionType == 0) {
+				System.out.println("== 게시글 상세보기 종료 ==");
 				return;
 			}
 
-			if (commentType == 1) {
+			if (actionType == 1) {
+
+				if (session.loginedMember == null) {
+					System.out.println("로그인 후 이용해주세요.");
+					return;
+				}
 
 				System.out.println("== 댓글 작성 ==");
 
@@ -142,10 +133,12 @@ public class ArticleController extends Controller {
 
 				System.out.printf("%d번 게시글의 %d번 댓글이 등록되었습니다.\n", id, commentId);
 
-			} else if (commentType == 2) {
+			} else if (actionType == 2) {
 
-				// 수정할 댓글 번호 입력받기 전 댓글목록 보기
-				// 작업 예정
+				if (session.loginedMember == null) {
+					System.out.println("로그인 후 이용해주세요.");
+					return;
+				}
 
 				// 수정할 댓글 번호 입력받기
 				int commentId;
@@ -188,7 +181,12 @@ public class ArticleController extends Controller {
 
 				System.out.printf("%d번 게시글의 %d번 댓글이 수정되었습니다.\n", id, commentId);
 
-			} else if (commentType == 3) {
+			} else if (actionType == 3) {
+
+				if (session.loginedMember == null) {
+					System.out.println("로그인 후 이용해주세요.");
+					return;
+				}
 
 				System.out.println("== 댓글 삭제 ==");
 
@@ -228,7 +226,7 @@ public class ArticleController extends Controller {
 				articleService.doDeleteComment(commentId);
 				System.out.printf("%d번 게시글의 %d번 댓글이 삭제되었습니다.\n", id, commentId);
 
-			} else if (commentType == 4) {
+			} else if (actionType == 4) {
 
 				int page = 1;
 				int itemsPage = 5;
@@ -524,10 +522,16 @@ public class ArticleController extends Controller {
 		System.out.printf("번 호 : %d\n", article.getId());
 		System.out.printf("등록일 : %s\n", article.getRegDate());
 		System.out.printf("수정일 : %s\n", article.getUpdateDate());
+		System.out.printf("작성자 : %s\n", article.getExtra_writer());
 		System.out.printf("제 목 : %s\n", article.getTitle());
 		System.out.printf("내 용 : %s\n", article.getBody());
 		System.out.printf("조회수 : %d\n", article.getHit());
 		System.out.printf(" 추천 [ %d건 ] 비추천 [ %d건 ] \n", likeCnt, disLikeCnt);
+		System.out.printf("댓 글 [ %d건 ]\n", articleService.getCommentsCnt(id));
+
+		// comment로 접근을 detail을 거쳐서 수행하도록
+		System.out.println();
+		doDetailAction(id);
 
 	}
 }
