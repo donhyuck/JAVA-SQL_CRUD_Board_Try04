@@ -9,6 +9,7 @@ import board.dto.Article;
 import board.dto.Comment;
 import board.util.DBUtil;
 import board.util.SecSql;
+import board.util.Util;
 
 public class ArticleDao {
 
@@ -286,6 +287,53 @@ public class ArticleDao {
 		sql.append("WHERE articleId = ?", id);
 
 		return DBUtil.selectRowIntValue(conn, sql);
+	}
+
+	public List<Article> getArticles() {
+
+		List<Article> articles = new ArrayList<>();
+
+		SecSql sql = new SecSql();
+
+		sql.append("SELECT a.*, m.name AS extra_writer");
+		sql.append("FROM article AS a");
+		sql.append("LEFT JOIN `member` AS m");
+		sql.append("ON a.memberId = m.id");
+		sql.append("ORDER BY a.id DESC");
+
+		List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
+
+		for (Map<String, Object> articleMap : articleListMap) {
+			articles.add(new Article(articleMap));
+		}
+
+		return articles;
+
+	}
+
+	public void exprotHtml() {
+
+		System.out.println("== HTML 생성을 시작합니다 ==");
+
+		List<Article> articles = getArticles();
+
+		for (Article article : articles) {
+
+			String fileName = "./html/" + article.getId() + ".html";
+			String html = "<meta charset=\"UTF-8\">";
+			html += "<div>번호: " + article.getId() + "</div>";
+			html += "<div>날짜: " + article.getRegDate() + "</div>";
+			html += "<div>작성자: " + article.getExtra_writer() + "</div>";
+			html += "<div>제목: " + article.getTitle() + "</div>";
+			html += "<div>내용: " + article.getBody() + "</div>";
+
+			html += "<div><a href=\"" + (article.getId() - 1) + ".html\">이전글</a></div>";
+			html += "<div><a href=\"" + (article.getId() + 1) + ".html\">다음글</a></div>";
+
+			Util.writeFileContents(fileName, html);
+
+		}
+
 	}
 
 }

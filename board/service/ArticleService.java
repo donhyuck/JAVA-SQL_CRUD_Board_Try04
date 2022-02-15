@@ -6,7 +6,6 @@ import java.util.List;
 import board.dao.ArticleDao;
 import board.dto.Article;
 import board.dto.Comment;
-import board.dto.Member;
 
 public class ArticleService {
 
@@ -105,6 +104,14 @@ public class ArticleService {
 
 	public int getCommentsCnt(int id) {
 		return articleDao.getCommentsCnt(id);
+	}
+
+	public List<Article> getArticles() {
+		return articleDao.getArticles();
+	}
+
+	public void exportHtml() {
+		articleDao.exprotHtml();
 	}
 
 }

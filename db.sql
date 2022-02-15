@@ -223,3 +223,22 @@ WHERE id = 1;
 # 댓글 삭제
 DELETE FROM `comment`
 WHERE id = 3;
+
+# 댓글번호로 댓글 가져오기
+SELECT *
+FROM `comment`
+WHERE id = 8;
+
+# 댓글 페이지
+SELECT c.*,m.name AS extra_writer
+FROM `comment` c
+INNER JOIN `member` m
+ON c.memberId = m.id
+WHERE c.articleId = 10
+ORDER BY c.id DESC
+LIMIT 1,5;
+
+# 댓글 갯수
+SELECT COUNT(*)
+FROM `comment`
+WHERE articleId = 10;

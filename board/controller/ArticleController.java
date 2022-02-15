@@ -81,9 +81,18 @@ public class ArticleController extends Controller {
 		case "detail":
 			showDetail();
 			break;
+		case "export":
+			exportHtml();
+			break;
 		default:
 			System.out.printf("%s는 잘못된 명령어입니다.\n", cmd);
 		}
+
+	}
+
+	private void exportHtml() {
+
+		articleService.exportHtml();
 
 	}
 
@@ -99,7 +108,8 @@ public class ArticleController extends Controller {
 			while (true) {
 				try {
 					System.out.print("[article detail] 명령어 : ");
-					actionType = new Scanner(System.in).nextInt();
+					actionType = sc.nextInt();
+					sc.nextLine();
 					break;
 
 				} catch (InputMismatchException e) {
@@ -140,7 +150,8 @@ public class ArticleController extends Controller {
 				while (true) {
 					try {
 						System.out.print("가이드 >>[나가기] 0 [댓글수정] 댓글번호 입력 : ");
-						commentId = new Scanner(System.in).nextInt();
+						commentId = sc.nextInt();
+						sc.nextLine();
 						break;
 
 					} catch (InputMismatchException e) {
@@ -190,7 +201,8 @@ public class ArticleController extends Controller {
 				while (true) {
 					try {
 						System.out.print("가이드 >>[나가기] 0 [댓글삭제] 댓글번호 입력 : ");
-						commentId = new Scanner(System.in).nextInt();
+						commentId = sc.nextInt();
+						sc.nextLine();
 						break;
 
 					} catch (InputMismatchException e) {

@@ -6,7 +6,6 @@ import java.util.Scanner;
 import board.dto.Member;
 import board.service.MemberService;
 import board.session.Session;
-import board.util.SecSql;
 
 public class MemberController extends Controller {
 
@@ -155,8 +154,6 @@ public class MemberController extends Controller {
 	private void doLogin() {
 
 		System.out.println("== 회원 로그인 ==");
-
-		SecSql sql = new SecSql();
 
 		String loginId;
 		String loginPw;
